@@ -1,0 +1,183 @@
+
+import com.sun.tools.javac.comp.Enter;
+
+import java.util.Random;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.xml.ws.Response;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class guiTest {
+
+    static int howManyG;
+    static int numberToGuess;
+
+    public static void main(String[] args)
+    {
+
+        JFrame frame = new JFrame("Dylan's Guess The Number Game");
+
+        frame.setSize(400, 250);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+        JPanel panel = new JPanel();
+
+        frame.add(panel);
+
+        placeComponents(panel);
+
+        frame.setVisible(true);
+
+    }
+
+
+    private static void placeComponents(JPanel panel)
+    {
+        Random randGenerator = new Random();
+
+        panel.setLayout(null);
+
+
+        JLabel Titlescreen = new JLabel("Do you want to play Guess The Number? y/n:");
+
+
+        Titlescreen.setBounds(45, 20, 400, 25);
+        panel.add(Titlescreen);
+
+
+        JButton Yes = new JButton("YES");
+        Yes.setBounds(120, 135, 83, 25);
+        panel.add(Yes);
+        Yes.setVisible(true);
+
+
+        JButton No = new JButton("NO");
+        No.setBounds(220, 135, 83, 25);
+        panel.add(No);
+        No.setVisible(true);
+
+
+        JTextField Response = new JTextField(20);
+        Response.setBounds(144, 71, 35, 20);
+        panel.add(Response);
+        Response.selectAll();
+
+
+        JButton Enter = new JButton("Enter");
+        Enter.setBounds(120, 115, 80, 25);
+        panel.add(Enter);
+        Enter.setVisible(false);
+        Response.setVisible(false);
+
+
+        Yes.addActionListener((ActionEvent e) ->
+        {
+            howManyG = 3;
+            numberToGuess = randGenerator.nextInt(10) + 1;
+            Yes.setVisible(false);
+            No.setVisible(false);
+            Response.setVisible(true);
+            Enter.setVisible(true);
+            Titlescreen.setText("Guess a number between 1-10: ");
+        });
+        No.addActionListener((ActionEvent e) ->
+                System.exit(0));
+
+
+        Enter.addActionListener((ActionEvent e) ->
+        {
+
+            if (howManyG > 0) {
+                System.out.println(numberToGuess);
+
+                Titlescreen.setText("you have " + howManyG + " guesses left");
+                Titlescreen.setVisible(true);
+
+
+
+                try {
+                    int theGuess = Integer.parseInt(Response.getText());
+                    String result = evaluateGuess(theGuess, numberToGuess);
+
+                    if (!result.contains("correctly"))
+                    {
+                        int guessesLeft = losssOfLife(howManyG);
+                        howManyG=guessesLeft;
+                        Titlescreen.setText("you guessed " + theGuess + " " + result + "you have " + howManyG + " guesses");
+                        if (howManyG == 0){
+                            Titlescreen.setText("you loose sucka");
+                            Enter.setVisible(false);
+                            Yes.setVisible(true);
+                            No.setVisible(true);
+                            Response.setVisible(false);
+                        }
+                    }else {
+                        Titlescreen.setText(result);
+
+                        Enter.setVisible(false);
+                        Yes.setVisible(true);
+                        No.setVisible(true);
+                        Response.setVisible(false);
+
+                    }
+
+
+
+                }
+                catch (java.lang.NumberFormatException e1)
+                {
+                    Titlescreen.setText("Please give valid answer.");
+                }
+            }
+        });
+    }
+
+    private static String evaluateGuess(int userGuess, int numberToGuess) {
+        String result;
+        if (userGuess < numberToGuess)
+        {
+            result = "Your guess was too low!";
+            return result;
+        } else if (userGuess > numberToGuess)
+        {
+            result = "your guess is to high!";
+            return result;
+        } else
+        {
+            result = "you guessed correctly!";
+            return result;
+        }
+    }
+
+    private static int losssOfLife(int howManyG)
+    {
+        howManyG --;
+        return howManyG;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
